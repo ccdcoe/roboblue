@@ -1,0 +1,3 @@
+[submodule "passivedns"]
+	path = passivedns
+	url = https://github.com/zyxtarmo/passivedns
