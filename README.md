@@ -2,4 +2,4 @@
 
 Automating The Blue Team
 
-![The Picture](http://ccdcoe.github.com/roboblue/img/implementation.png)
+![The Picture](http://ccdcoe.github.io/roboblue/img/implementation.png)
