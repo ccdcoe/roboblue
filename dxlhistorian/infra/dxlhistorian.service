@@ -1,0 +1,13 @@
+[Unit]
+Description=DXLHistorian - The OpenDXL event recorder
+Documentation=https://github.com/ccdcoe/roboblue/wiki
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python -m dxlhistorian
+KillSignal=SIGINT
+ExecReload=/bin/kill -HUP $MAINPID
+WorkingDirectory=/etc/dxlhistorian
+
+[Install]
+WantedBy=multi-user.target
