@@ -19,10 +19,13 @@ VERSION = None
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    "dxlclient>=5.0.0.568"
-    "cffi>=1.11.5",
+    "dxlclient>=5.0.0.568",
+    "cffi>=0.8",
     "configobj>=5.0.6",
-    "elasticsearch<7.0.0,>=6.0.0"
+    "elasticsearch<7.0.0,>=6.0.0",
+    # DXL client dependency pulls in requests, but does not specify version. Will clash on older debian without
+    # intervention
+    "requests>=2.21.0"
 ]
 
 # What packages are optional?

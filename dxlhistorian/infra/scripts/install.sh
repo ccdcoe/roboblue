@@ -3,8 +3,7 @@ set -e
 
 INSTALL_DIRECTORY=${INSTALL_DIRECTORY:-"/etc/dxlhistorian"}
 
-# Install the package globally
-sudo pip install .
+pip install .
 
 if [[ ! -d "${INSTALL_DIRECTORY}" ]]; then
     mkdir "${INSTALL_DIRECTORY}"
