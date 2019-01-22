@@ -1,13 +1,49 @@
 import logging
+import threading
+import time
 
-from dxlclient.client import DxlClient
 from dxlclient.message import Event
 from dxlclient.callbacks import EventCallback
 
-from .config import HistorianConfig
+from robobluekit import Monitor
+from robobluekit.kit import format_timestamp
+
 from .recorder import Recorder
 
 logger = logging.getLogger(__name__)
+
+
+class RecordingMonitor(Monitor):
+
+    def __init__(self, name):
+        self.__first_receipt = None
+        self.__last_receipt = None
+        self.__last_size = None
+        self.__message_count = 0
+        self.__lock = threading.Lock()
+        Monitor.__init__(self, name)
+
+    def record_event_receipt(self, event):
+        # type: (Event) -> None
+        with self.__lock:
+            now = time.time()
+            if self.__first_receipt is None:
+                self.__first_receipt = now
+            self.__last_receipt = now
+            self.__last_size = len(event.payload)
+            self.__message_count += 1
+
+    @property
+    def healthy(self):
+        return None
+
+    def report_status(self):
+        return {
+            'first_event_received': format_timestamp(self.__first_receipt),
+            'latest_event_received': format_timestamp(self.__last_receipt),
+            'latest_event_size': self.__last_size,
+            'event_count': self.__message_count,
+        }
 
 
 class RecordingCallback(EventCallback):
@@ -16,18 +52,20 @@ class RecordingCallback(EventCallback):
         use
     """
 
-    def __init__(self, recorder):
-        # type: (Recorder) -> None
+    def __init__(self, recorder, monitor):
+        # type: (Recorder, RecordingMonitor) -> None
         EventCallback.__init__(self)
         self.__recorder = recorder
+        self.__monitor = monitor
 
     def on_event(self, event):
         # type: (Event) -> None
         logger.debug('received event %s from the service fabric', event.message_id)
         try:
             self.__recorder.record(event)
+            self.__monitor.record_event_receipt(event)
         except BaseException as e:
-            logger.error('failed logging event %s due to error: %s', event.message_id, e.message)
+            logger.error('failed recording event %s due to error: %s', event.message_id, e.message)
 
 
 class Historian:
@@ -36,23 +74,18 @@ class Historian:
         on the OpenDXL fabric
     """
 
-    # DXLClient for communicating with the service fabric
-    __dxl = None
-
-    # Instance responsible for handling messages it has received
-    __recorder = None
-
-    def __init__(self, config, dxl, recorder):
-        # type: (HistorianConfig, DxlClient, Recorder) -> None
+    def __init__(self, config, dxl, recorder, register_monitor):
         self.__config = config
         self.__dxl = dxl
         self.__recorder = recorder
+        self.__register_monitor = register_monitor
 
     def start(self):
         self.__dxl.connect()
         logger.info('connected dxlhistorian to service fabric')
-        callback = RecordingCallback(self.__recorder)
         for topic in self.__config.subscribe_to:
+            callback = RecordingCallback(self.__recorder,
+                                         self.__register_monitor(RecordingMonitor('recording.{}'.format(topic))))
             self.__dxl.add_event_callback(topic, callback)
             logger.info("subscribed dxlhistorian to topic %s", topic)
 

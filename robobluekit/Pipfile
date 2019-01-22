@@ -6,8 +6,8 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-dxlhistorian = {editable = true,path = "."}
-robobluekit = {editable = true,path = "./../robobluekit"}
+robobluewrapper = {editable = true,path = "."}
+robobluekit = {editable = true,path = "."}
 
 [requires]
 python_version = "2.7"

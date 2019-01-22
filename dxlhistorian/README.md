@@ -25,6 +25,13 @@ Note that two utility scripts `./infra/scripts/install.sh` and `./infra/scripts/
 * Disable the service (optional)
 * Run `./infra/scripts/uninstall.sh` from the distribution root as a super user
 
+#### Upgrading an existing installation
+
+No ready-made upgrade scripts are provided at this time. Manual upgrades using `pip` are advised. The general idea is to
+first install the newer version of the `robobluekit` package and then update the `dxlhistorian`.
+
+If any new configuration was added, the configuration files are required to be edited manually.
+
 ### Operation
 
 After installation the Historian service requires configuration for the DXL client & itself. The DXL client configuration can be obtained in the [traditional way](https://opendxl.github.io/opendxl-client-python/pydoc/provisioningoverview.html) not covered here.  

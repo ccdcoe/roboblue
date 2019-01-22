@@ -1,43 +1,11 @@
 from configobj import ConfigObj
 
+from robobluekit.kit import run_validators, require, require_and_enforce_type, require_and_enforce_values, \
+    require_and_try_coercion
+
 # String representations of available recorder types
 RECORDER_STDOUT = 'STDOUT'
 RECORDER_ELASTICSEARCH = 'Elasticsearch'
-
-
-class InvalidConfigException(Exception):
-    pass
-
-
-def require(keyword, container):
-    if keyword not in container:
-        raise InvalidConfigException('Missing required keyword {} in configuration'.format(keyword))
-
-
-def require_and_enforce_type(keyword, t, container):
-    require(keyword, container)
-    if not isinstance(container[keyword], t):
-        raise InvalidConfigException('Invalid value type for configuration keyword {}'.format(keyword))
-
-
-def require_and_try_coercion(keyword, t, container):
-    require(keyword, container)
-    try:
-        t(container[keyword])
-    except ValueError:
-        raise InvalidConfigException('{} must be coercible to {}'.format(keyword, t))
-
-
-def require_and_enforce_values(keyword, possible_values, container):
-    require(keyword, container)
-    if container[keyword] not in possible_values:
-        raise InvalidConfigException('Value for keyword {} is not allowed')
-
-
-def run_validators(spec, container):
-    for triple in spec:
-        keyword, t, validator = triple
-        validator(keyword, t, container) if t is not None else validator(keyword, container)
 
 
 class RecorderConfig:
