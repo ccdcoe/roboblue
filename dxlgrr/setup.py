@@ -9,9 +9,9 @@ import os
 from setuptools import setup
 
 # Package meta-data.
-NAME = 'robobluekit'
-DESCRIPTION = 'Robobluekit is a collection of common components for services that are part of the Roboblue project'
-URL = 'https://github.com/ccdcoe/roboblue/tree/master/robobluekit'
+NAME = 'dxlgrr'
+DESCRIPTION = 'DXL GRR is a DXL service enabling integration with the GRR API over the DXL service fabric'
+URL = 'https://github.com/ccdcoe/roboblue/tree/master/dxlgrr'
 EMAIL = 'me@example.com'
 AUTHOR = 'CCDCOE'
 REQUIRES_PYTHON = '>=2.7.9,<3.0'
@@ -19,12 +19,10 @@ VERSION = None
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    "configobj>=5.0.6",
-    "cffi>=0.8",
-    "dxlclient>=5.0.0.568",
-    # DXL client dependency pulls in requests, but does not specify version. Will clash on older debian without
-    # intervention
-    "requests>=2.21.0"
+    'grr-api-client==3.2.4.post6',
+    # Since the GRR API client requires a rather new release of cryptography, pyOpenSSL will most likely
+    # be outdated on debian based systems and break pip without this additional assurance
+    'pyOpenSSL>=18.0.0'
 ]
 
 # What packages are optional?
@@ -61,6 +59,7 @@ if not VERSION:
 else:
     about['__version__'] = VERSION
 
+
 # Where the magic happens:
 setup(
     name=NAME,
@@ -72,7 +71,7 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=['robobluekit'],
+    packages=['dxlgrr'],
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,

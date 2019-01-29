@@ -1,0 +1,13 @@
+[Unit]
+Description=DXLGRR - OpenDXL wrapper for the Google Rapid Response API
+Documentation=https://github.com/ccdcoe/roboblue/wiki
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python -m dxlgrr
+KillSignal=SIGINT
+ExecReload=/bin/kill -HUP $MAINPID
+WorkingDirectory=/etc/dxlgrr
+
+[Install]
+WantedBy=multi-user.target
