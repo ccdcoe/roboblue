@@ -1,6 +1,4 @@
 import logging
-import threading
-import time
 
 from dxlclient.service import ServiceRegistrationInfo
 from dxlclient.callbacks import RequestCallback
@@ -13,66 +11,9 @@ import grr_api_client.errors as grr_errors
 from grr_response_proto.api.reflection_pb2 import ApiMethod
 from werkzeug.routing import BuildError
 
-from robobluekit.monitor import Monitor
-from robobluekit.kit import format_timestamp
+from robobluekit.kit import ServiceEndpointMonitor
 
 logger = logging.getLogger(__name__)
-
-
-class DispatcherMonitor(Monitor):
-    """
-    Monitor implementation to monitor request dispatchers
-    """
-
-    def __init__(self, name):
-        self.__lock = threading.Lock()
-        self.__first_request = None
-        self.__latest_request = None
-        self.__request_count = 0
-        self.__error_count = 0  # Internal errors
-        self.__in_error = False
-        Monitor.__init__(self, name)
-
-    def register_request(self):
-        """
-        Register the receipt of a new DXL request message
-        :return: None
-        """
-        with self.__lock:
-            now = time.time()
-            if self.__first_request is None:
-                self.__first_request = now
-            self.__latest_request = now
-            self.__request_count += 1
-
-    def register_success(self):
-        """
-        Register the successful processing of a DXL request
-        :return: None
-        """
-        with self.__lock:
-            self.__in_error = False
-
-    def register_error(self):
-        """
-        Register an internal error that occurred within the service
-        :return: None
-        """
-        with self.__lock:
-            self.__in_error = True
-            self.__error_count += 1
-
-    @property
-    def healthy(self):
-        return not self.__in_error
-
-    def report_status(self):
-        return {
-            'first_request_received': format_timestamp(self.__first_request),
-            'latest_request_received': format_timestamp(self.__latest_request),
-            'request_count': self.__request_count,
-            'error_count': self.__error_count
-        }
 
 
 class Dispatcher(RequestCallback):
@@ -82,7 +23,7 @@ class Dispatcher(RequestCallback):
     """
 
     def __init__(self, endpoint, board, monitor):
-        # type: (ApiMethod, SwitchBoard, DispatcherMonitor) -> None
+        # type: (ApiMethod, SwitchBoard, ServiceEndpointMonitor) -> None
         self.__endpoint = endpoint
         self.__args = None
         # If the endpoint excepts input, create a constructor function to return an empty PB message type
@@ -143,7 +84,8 @@ class SwitchBoard:
         for endpoint in self.__endpoints:
             topic = self.__config.service_type + '/' + endpoint.name
             svc.add_topic(topic,
-                          Dispatcher(endpoint, self, self.__register_monitor(DispatcherMonitor('endpoints.' + topic))))
+                          Dispatcher(endpoint, self,
+                                     self.__register_monitor(ServiceEndpointMonitor('endpoints.' + topic))))
         self.dxlc.register_service_sync(svc, 5)
 
     def __load_endpoints(self):
