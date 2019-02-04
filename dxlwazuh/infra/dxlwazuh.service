@@ -1,0 +1,13 @@
+[Unit]
+Description=DXLWazuh - OpenDXL wrapper/bridge for the Wazuh API
+Documentation=https://github.com/ccdcoe/roboblue/wiki
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python -m dxlwazuh
+KillSignal=SIGINT
+ExecReload=/bin/kill -HUP $MAINPID
+WorkingDirectory=/etc/dxlwazuh
+
+[Install]
+WantedBy=multi-user.target

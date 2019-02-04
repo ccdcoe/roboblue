@@ -1,0 +1,5 @@
+*
+!.gitignore
+!dxlwazuh.config
+!logging.config
+!monitoring.config

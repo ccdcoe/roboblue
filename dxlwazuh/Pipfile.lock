@@ -1,0 +1,28 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "88ee47a2137c1af8aa6f42c76b13f8cead1c546462447debd4542a658563cdd2"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "2.7"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "dxlwazuh": {
+            "editable": true,
+            "path": "."
+        },
+        "robobluekit": {
+            "path": "./../robobluekit"
+        }
+    },
+    "develop": {}
+}

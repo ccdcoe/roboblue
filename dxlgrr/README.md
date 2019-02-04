@@ -63,7 +63,7 @@ The service is capable of running as a non privileged user given that the config
 
 #### Logging
 
-The Historian service logs using the standard Python logging library. Behaviour of the logger can be configured using
+The DXL GRR service logs using the standard Python logging library. Behaviour of the logger can be configured using
 the logging configuration file as described [here](https://docs.python.org/2/library/logging.config.html#configuration-file-format).
 By default, the service looks for the configuration file as `./config/logging.config` in its working directory. Note
 that this file can be omitted.
@@ -72,7 +72,7 @@ An example of a debug logging configuration has been included in the repository 
 
 ### Configuration
 
-By default the Historian service looks for its necessary configuration files in the chosen working directory. Configuration files and certificates are expected to be in the `config` sub directory. Do note that this behaviour can be configured using command line arguments. See the below table for further information about configuration options.
+By default the DXL GRR service looks for its necessary configuration files in the chosen working directory. Configuration files and certificates are expected to be in the `config` sub directory. Do note that this behaviour can be configured using command line arguments. See the below table for further information about configuration options.
 
 Configuration block     | Keyword               | Comment
 ------------------------|-----------------------|---------

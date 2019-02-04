@@ -1,3 +1,65 @@
+import threading
+import time
+
+from .monitor import Monitor
+
+
+class ServiceEndpointMonitor(Monitor):
+    """
+    Service endpoint monitor is included with the roboblue kit to create an unified way to monitor OpenDXL service
+    endpoints
+    """
+    def __init__(self, name):
+        self.__lock = threading.Lock()
+        self.__first_request = None
+        self.__latest_request = None
+        self.__request_count = 0
+        self.__error_count = 0  # Internal errors
+        self.__in_error = False
+        Monitor.__init__(self, name)
+
+    def register_request(self):
+        """
+        Register the receipt of a new DXL request message
+        :return: None
+        """
+        with self.__lock:
+            now = time.time()
+            if self.__first_request is None:
+                self.__first_request = now
+            self.__latest_request = now
+            self.__request_count += 1
+
+    def register_success(self):
+        """
+        Register the successful processing of a DXL request
+        :return: None
+        """
+        with self.__lock:
+            self.__in_error = False
+
+    def register_error(self):
+        """
+        Register an internal error that occurred within the service
+        :return: None
+        """
+        with self.__lock:
+            self.__in_error = True
+            self.__error_count += 1
+
+    @property
+    def healthy(self):
+        return not self.__in_error
+
+    def report_status(self):
+        return {
+            'first_request_received': format_timestamp(self.__first_request),
+            'latest_request_received': format_timestamp(self.__latest_request),
+            'request_count': self.__request_count,
+            'error_count': self.__error_count
+        }
+
+
 def format_timestamp(stamp):
     """
     Consistent way to format a floating point UNIX timestamp to a long ms resolution one
