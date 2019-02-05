@@ -1,6 +1,7 @@
 # DXL Wazuh
 
 DXL Wazuh is a OpenDXL service providing a wrapper around the [Wazuh](https://wazuh.com/) API. The service targets `Python 2.7.*` series. The usual under development disclaimer applies.
+Note that this service depends on [Robobluekit](https://github.com/ccdcoe/roboblue/tree/master/robobluekit).
 
 ## Understanding the service
 
@@ -26,7 +27,8 @@ The updating process is as follows:
 
 ### Installation
 
-The DXL Wazuh service is distributed as a Python package. The recommended installation method at this time is to install the package using [pip](https://pip.pypa.io/en/stable/). The software is currently only distributed in this way and not available from any package repository.
+The DXL Wazuh service is distributed as a Python package. Note that the service depends on Robobluekit. The utility script installs it beforehand, when performing manual installation 
+the operator is expected to install it themselves. The recommended installation method at this time is to install the package using [pip](https://pip.pypa.io/en/stable/). The software is currently only distributed in this way and not available from any package repository.
 
 To install the package globally, invoke the following in the project root directory: `pip install .` 
 This will install the `dxlwazuh` package globally. The service can then be invoked by calling `python -m dxlwazuh ...`. For further information about command line configuration and usage call `python -m dxlwazuh -h`.
@@ -35,6 +37,7 @@ Note that two utility scripts `./infra/scripts/install.sh` and `./infra/scripts/
 
 #### Installation with utility script
 
+* Ensure that [Robobluekit](https://github.com/ccdcoe/roboblue/tree/master/robobluekit) is available as a directory in the parent directory or git is available on the installing machine
 * Run `./infra/scripts/install.sh` from the distribution root as a superuser
 * Perform [DXLClient provisioning](https://opendxl.github.io/opendxl-client-python/pydoc/provisioningoverview.html) so that `/etc/dxlwazuh/config/dxlclient.config` would be available
 * Modify configuration in `/etc/dxlwazuh/config/dxlwazuh.config` to match your environment
