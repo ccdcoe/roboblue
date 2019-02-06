@@ -1,0 +1,13 @@
+[Unit]
+Description=DXLReputation - OpenDXL service to store reputation of arbitrary entities
+Documentation=https://github.com/ccdcoe/roboblue/wiki
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python -m dxlreputation
+KillSignal=SIGINT
+ExecReload=/bin/kill -HUP $MAINPID
+WorkingDirectory=/etc/dxlreputation
+
+[Install]
+WantedBy=multi-user.target
