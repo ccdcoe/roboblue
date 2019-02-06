@@ -1,0 +1,5 @@
+*
+!.gitignore
+!dxlreputation.config
+!logging.config
+!monitoring.config
