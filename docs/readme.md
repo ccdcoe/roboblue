@@ -1,1 +1,1 @@
-Github pages init.
+Github pages init..
